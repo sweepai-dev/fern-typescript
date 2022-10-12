@@ -1,6 +1,8 @@
 import { assertNever } from "@fern-api/core-utils";
+import { FernFilepath, StringWithAllCasings } from "@fern-fern/ir-model/commons";
 import { Reference } from "@fern-typescript/sdk-declaration-handler";
 import { ExportedDirectory, ExportedFilePath } from "../exports-manager/ExportedFilePath";
+import { ExportDeclaration } from "../exports-manager/ExportsManager";
 import { DeclarationReferencer } from "./DeclarationReferencer";
 import { getDirectReferenceToExport } from "./utils/getDirectReferenceToExport";
 import { getReferenceToExportFromRoot } from "./utils/getReferenceToExportFromRoot";
@@ -51,5 +53,39 @@ export abstract class AbstractDeclarationReferencer<Name> implements Declaration
             default:
                 assertNever(importStrategy);
         }
+    }
+
+    protected getExportedDirectoriesForFernFilepath({
+        fernFilepath,
+        subExports,
+    }: {
+        fernFilepath: FernFilepath;
+        subExports?: Record<string, ExportDeclaration>;
+    }): ExportedDirectory[] {
+        return fernFilepath.map((fernFilepathPart, index) =>
+            index === fernFilepath.length - 1
+                ? this.createExportForFernFilepathFile(fernFilepathPart, subExports)
+                : this.createExportForFernFilepathDirectory(fernFilepathPart)
+        );
+    }
+
+    protected createExportForFernFilepathDirectory(fernFilepathPart: StringWithAllCasings): ExportedDirectory {
+        return {
+            nameOnDisk: fernFilepathPart.originalValue,
+            exportDeclaration: { namespaceExport: fernFilepathPart.camelCase },
+        };
+    }
+
+    private createExportForFernFilepathFile(
+        fernFilepathPart: StringWithAllCasings,
+        subExports?: Record<string, ExportDeclaration>
+    ): ExportedDirectory {
+        return {
+            nameOnDisk: fernFilepathPart.originalValue,
+            exportDeclaration: {
+                namespaceExport: fernFilepathPart.camelCase,
+            },
+            subExports,
+        };
     }
 }

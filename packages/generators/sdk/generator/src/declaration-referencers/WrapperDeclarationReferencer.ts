@@ -3,14 +3,13 @@ import { Reference } from "@fern-typescript/sdk-declaration-handler";
 import { ExportedFilePath } from "../exports-manager/ExportedFilePath";
 import { AbstractDeclarationReferencer } from "./AbstractDeclarationReferencer";
 import { DeclarationReferencer } from "./DeclarationReferencer";
-import { createExportForFernFilepathDirectory } from "./utils/getExportedDirectoriesForFernFilepath";
 
 export class WrapperDeclarationReferencer extends AbstractDeclarationReferencer<WrapperName> {
     public getExportedFilepath(wrapperName: WrapperName): ExportedFilePath {
         return {
             directories: [
                 ...this.containingDirectory,
-                ...wrapperName.fernFilepath.map(createExportForFernFilepathDirectory),
+                ...wrapperName.fernFilepath.map((part) => this.createExportForFernFilepathDirectory(part)),
             ],
             file: {
                 nameOnDisk: this.getFilename(wrapperName),

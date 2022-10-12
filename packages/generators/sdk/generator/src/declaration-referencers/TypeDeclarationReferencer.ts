@@ -4,7 +4,6 @@ import { Reference } from "@fern-typescript/sdk-declaration-handler";
 import { ExportedFilePath } from "../exports-manager/ExportedFilePath";
 import { AbstractDeclarationReferencer } from "./AbstractDeclarationReferencer";
 import { DeclarationReferencer } from "./DeclarationReferencer";
-import { getExportedDirectoriesForFernFilepath } from "./utils/getExportedDirectoriesForFernFilepath";
 
 export const TYPES_DIRECTORY_NAME = "types";
 
@@ -13,7 +12,7 @@ export class TypeDeclarationReferencer extends AbstractDeclarationReferencer<Dec
         return {
             directories: [
                 ...this.containingDirectory,
-                ...getExportedDirectoriesForFernFilepath({
+                ...this.getExportedDirectoriesForFernFilepath({
                     fernFilepath: typeName.fernFilepath,
                     subExports: {
                         [RelativeFilePath.of(TYPES_DIRECTORY_NAME)]: {
