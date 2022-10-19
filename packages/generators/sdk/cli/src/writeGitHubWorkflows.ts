@@ -24,7 +24,7 @@ export async function writeGitHubWorkflows({
         runs-on: ubuntu-latest
     
         steps:
-          - name: Chec out repo
+          - name: Checkout repo
             uses: actions/checkout@3
     
           - name: Set up node
