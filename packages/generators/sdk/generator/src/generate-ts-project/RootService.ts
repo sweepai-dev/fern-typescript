@@ -1,4 +1,6 @@
+import { RelativeFilePath } from "@fern-api/core-utils";
+
 export interface RootService {
     name: string;
-    moduleSpecifier: string;
+    relativeFilepath: RelativeFilePath;
 }

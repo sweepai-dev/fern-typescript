@@ -103,6 +103,8 @@ describe("runGenerator", () => {
                 const pathToGitArchive = path.join(outputPath, "archive.zip");
                 await runCommandInOutputDirectory("git", ["init", "--initial-branch=main"]);
                 await runCommandInOutputDirectory("git", ["add", "."]);
+                // explicitly add index.d.ts, which is generally git-ignored
+                await runCommandInOutputDirectory("git", ["add", "-f", "index.d.ts"]);
                 await runCommandInOutputDirectory("git", ["commit", "-m", '"Initial commit"']);
                 await runCommandInOutputDirectory("git", ["archive", "--output", pathToGitArchive, "main"]);
 

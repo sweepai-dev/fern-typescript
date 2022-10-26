@@ -1,9 +1,8 @@
+import { join } from "@fern-api/core-utils";
 import { Volume } from "memfs/lib/volume";
 import { OUTPUT_DIRECTORY } from "./constants";
 import { RootService } from "./RootService";
 import { getPathToProjectFile } from "./utils";
-
-const LEADING_PERIOD_REGEX = /^\./;
 
 export async function generateRootDeclarationFile({
     volume,
@@ -12,7 +11,7 @@ export async function generateRootDeclarationFile({
     volume: Volume;
     rootService: RootService;
 }): Promise<void> {
-    const pathToRootService = OUTPUT_DIRECTORY + rootService.moduleSpecifier.replace(LEADING_PERIOD_REGEX, "");
+    const pathToRootService = join(OUTPUT_DIRECTORY, rootService.relativeFilepath);
 
     await volume.promises.writeFile(
         getPathToProjectFile("index.d.ts"),
