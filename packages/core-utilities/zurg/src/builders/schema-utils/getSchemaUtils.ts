@@ -13,10 +13,6 @@ export function getSchemaUtils<Raw, Parsed>(schema: BaseSchema<Raw, Parsed>): Sc
     };
 }
 
-/**
- * schema utils are defined in one file to resolve issues with circular imports
- */
-
 export function optional<Raw, Parsed>(schema: BaseSchema<Raw, Parsed>): OptionalSchema<Raw, Parsed> {
     const baseSchema: BaseSchema<Raw | null | undefined, Parsed | undefined> = {
         parse: (raw, opts) => (raw != null ? schema.parse(raw, opts) : undefined),
