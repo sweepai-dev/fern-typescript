@@ -1,5 +1,4 @@
 export const SRC_DIRECTORY = "src";
-export const TYPES_DIRECTORY = "types";
 export const BUILD_SCRIPT_NAME = "build.js";
 
 export const DIST_DIRECTORY = "dist";

@@ -11,7 +11,6 @@ import {
     DIST_DIRECTORY,
     NODE_DIST_DIRECTORY,
     SERIALIZATION_BUNDLE_FILENAME,
-    TYPES_DIRECTORY,
 } from "./constants";
 import { getPathToProjectFile } from "./utils";
 
@@ -62,13 +61,22 @@ export async function generatePackageJson({
         ...packageJson,
         private: isPackagePrivate,
         repository: repositoryUrl,
-        files: ["dist", TYPES_DIRECTORY],
+        files: ["dist", "*.d.ts"],
         exports: {
-            ".": getExports(API_BUNDLE_FILENAME),
-            "./core": getExports(CORE_BUNDLE_FILENAME),
-            "./serialization": getExports(SERIALIZATION_BUNDLE_FILENAME),
+            ".": getExports({
+                bundleFilename: API_BUNDLE_FILENAME,
+                typesFilename: "./index.d.ts",
+            }),
+            "./core": getExports({
+                bundleFilename: CORE_BUNDLE_FILENAME,
+                typesFilename: "./core/index.d.ts",
+            }),
+            "./serialization": getExports({
+                bundleFilename: SERIALIZATION_BUNDLE_FILENAME,
+                typesFilename: "./serialization/index.d.ts",
+            }),
         },
-        types: `./${TYPES_DIRECTORY}/index.d.ts`,
+        types: "./index.d.ts",
         scripts: {
             [PackageJsonScript.FORMAT]: PRETTIER_COMMAND.join(" "),
             [PackageJsonScript.COMPILE]: "tsc && tsc-alias",
@@ -97,12 +105,13 @@ export async function generatePackageJson({
     await volume.promises.writeFile(getPathToProjectFile("package.json"), JSON.stringify(packageJson, undefined, 4));
 }
 
-function getExports(filename: string) {
+function getExports({ bundleFilename, typesFilename }: { bundleFilename: string; typesFilename: string }) {
     return {
-        node: getPathToNodeDistFile(filename),
-        import: getPathToBrowserEsmDistFile(filename),
-        require: getPathToBrowserCjsDistFile(filename),
-        default: getPathToBrowserCjsDistFile(filename),
+        types: typesFilename,
+        node: getPathToNodeDistFile(bundleFilename),
+        import: getPathToBrowserEsmDistFile(bundleFilename),
+        require: getPathToBrowserCjsDistFile(bundleFilename),
+        default: getPathToBrowserCjsDistFile(bundleFilename),
     };
 }
 
