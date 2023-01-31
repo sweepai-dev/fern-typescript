@@ -1,8 +1,8 @@
 import { GenericAPISdkErrorContextMixin, SdkErrorSchemaContext } from "@fern-typescript/contexts";
-import { SdkErrorSchemaGenerator } from "@fern-typescript/error-schema-generator";
 import { GenericAPISdkErrorGenerator } from "@fern-typescript/generic-sdk-error-generators";
 import { ErrorResolver, TypeResolver } from "@fern-typescript/resolvers";
 import { SdkErrorGenerator } from "@fern-typescript/sdk-error-generator";
+import { SdkErrorSchemaGenerator } from "@fern-typescript/sdk-error-schema-generator";
 import { TypeGenerator } from "@fern-typescript/type-generator";
 import { TypeReferenceExampleGenerator } from "@fern-typescript/type-reference-example-generator";
 import { TypeSchemaGenerator } from "@fern-typescript/type-schema-generator";
