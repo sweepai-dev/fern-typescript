@@ -103,7 +103,9 @@ export function object<ParsedKeys extends string, T extends PropertySchemas<Pars
     };
 }
 
-export function getObjectUtils<Raw, Parsed>(schema: BaseObjectSchema<Raw, Parsed>): ObjectUtils<Raw, Parsed> {
+export function getObjectUtils<Raw extends {}, Parsed extends {}>(
+    schema: BaseObjectSchema<Raw, Parsed>
+): ObjectUtils<Raw, Parsed> {
     return {
         extend: <RawExtension, ParsedExtension>(extension: ObjectSchema<RawExtension, ParsedExtension>) => {
             const baseSchema: BaseObjectSchema<Raw & RawExtension, Parsed & ParsedExtension> = {

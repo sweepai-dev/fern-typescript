@@ -9156,7 +9156,7 @@ export type BaseObjectLikeSchema<Raw, Parsed> = BaseSchema<Raw, Parsed> & {
 };
 
 export interface ObjectLikeUtils<Raw, Parsed> {
-    withProperties: <T extends Record<string, any>>(properties: {
+    withProperties: <T extends {}>(properties: {
         [K in keyof T]: T[K] | ((parsed: Parsed) => T[K]);
     }) => ObjectLikeSchema<Raw, Parsed & T>;
 }

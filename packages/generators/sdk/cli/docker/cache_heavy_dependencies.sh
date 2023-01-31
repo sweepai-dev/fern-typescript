@@ -11,7 +11,7 @@ cd $project_name
 # but it initializes the project correctly.
 yarn init -2 || :
 
-yarn add typescript@4.6.4
+yarn add typescript@4.9.3
 yarn add esbuild@0.16.15
 
 cd ..

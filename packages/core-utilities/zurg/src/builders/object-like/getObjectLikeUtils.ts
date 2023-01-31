@@ -1,11 +1,14 @@
+import { entries } from "../../utils/entries";
 import { getSchemaUtils } from "../schema-utils";
 import { BaseObjectLikeSchema, ObjectLikeSchema, ObjectLikeUtils, OBJECT_LIKE_BRAND } from "./types";
 
-export function getObjectLikeUtils<Raw, Parsed>(
+export function getObjectLikeUtils<Raw extends {}, Parsed extends {}>(
     schema: BaseObjectLikeSchema<Raw, Parsed>
 ): ObjectLikeUtils<Raw, Parsed> {
     return {
-        withProperties: (properties) => withProperties(schema, properties),
+        withProperties: <T extends {}>(properties: {
+            [K in keyof T]: T[K] | ((parsed: Parsed) => T[K]);
+        }): ObjectLikeSchema<Raw, Parsed & T> => withProperties(schema, properties),
     };
 }
 
@@ -13,7 +16,7 @@ export function getObjectLikeUtils<Raw, Parsed>(
  * object-like utils are defined in one file to resolve issues with circular imports
  */
 
-export function withProperties<RawObjectShape, ParsedObjectShape, Properties>(
+export function withProperties<RawObjectShape extends {}, ParsedObjectShape extends {}, Properties extends {}>(
     objectLike: BaseObjectLikeSchema<RawObjectShape, ParsedObjectShape>,
     properties: { [K in keyof Properties]: Properties[K] | ((parsed: ParsedObjectShape) => Properties[K]) }
 ): ObjectLikeSchema<RawObjectShape, ParsedObjectShape & Properties> {
@@ -39,10 +42,10 @@ export function withProperties<RawObjectShape, ParsedObjectShape, Properties>(
         json: (parsed, opts) => {
             // strip out added properties
             const addedPropertyKeys = new Set(Object.keys(properties));
-            const parsedWithoutAddedProperties = Object.entries(parsed).reduce<Record<string, any>>(
+            const parsedWithoutAddedProperties = entries(parsed).reduce<Record<string, any>>(
                 (filtered, [key, value]) => {
-                    if (!addedPropertyKeys.has(key)) {
-                        filtered[key] = value;
+                    if (!addedPropertyKeys.has(key as string)) {
+                        filtered[key as string] = value;
                     }
                     return filtered;
                 },

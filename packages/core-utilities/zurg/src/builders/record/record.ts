@@ -8,7 +8,7 @@ export function record<RawKey extends string | number, ParsedKey extends string 
 ): Schema<Record<RawKey, RawValue>, Record<ParsedKey, ParsedValue>> {
     const baseSchema: BaseSchema<Record<RawKey, RawValue>, Record<ParsedKey, ParsedValue>> = {
         parse: (raw, opts) => {
-            return entries(raw).reduce(async (parsedPromise, [key, value]) => {
+            return entries(raw).reduce(async (parsedPromise: Promise<Record<ParsedKey, ParsedValue>>, [key, value]) => {
                 const parsed: Record<ParsedKey, ParsedValue> = await parsedPromise;
                 const parsedKey = await keySchema.parse(key, opts);
                 parsed[parsedKey] = await valueSchema.parse(value, opts);
@@ -16,7 +16,7 @@ export function record<RawKey extends string | number, ParsedKey extends string 
             }, Promise.resolve({} as Record<ParsedKey, ParsedValue>));
         },
         json: (parsed, opts) => {
-            return entries(parsed).reduce(async (rawPromise, [key, value]) => {
+            return entries(parsed).reduce(async (rawPromise: Promise<Record<RawKey, RawValue>>, [key, value]) => {
                 const raw: Record<RawKey, RawValue> = await rawPromise;
                 const rawKey = await keySchema.json(key, opts);
                 raw[rawKey] = await valueSchema.json(value, opts);

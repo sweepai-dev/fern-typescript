@@ -4,7 +4,9 @@ import { BaseObjectSchema, ObjectSchema } from "../object/types";
 import { getSchemaUtils } from "../schema-utils";
 import { constructLazyBaseSchema, getMemoizedSchema, SchemaGetter } from "./lazy";
 
-export function lazyObject<Raw, Parsed>(getter: SchemaGetter<ObjectSchema<Raw, Parsed>>): ObjectSchema<Raw, Parsed> {
+export function lazyObject<Raw extends {}, Parsed extends {}>(
+    getter: SchemaGetter<ObjectSchema<Raw, Parsed>>
+): ObjectSchema<Raw, Parsed> {
     const baseSchema: BaseObjectSchema<Raw, Parsed> = {
         ...OBJECT_LIKE_BRAND,
         ...constructLazyBaseSchema(getter),

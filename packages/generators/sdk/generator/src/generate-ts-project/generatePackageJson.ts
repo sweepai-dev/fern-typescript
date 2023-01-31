@@ -28,7 +28,7 @@ export const DEV_DEPENDENCIES: Record<string, string> = {
     "@types/node": "17.0.33",
     esbuild: "0.16.15",
     prettier: "2.7.1",
-    typescript: "4.6.4",
+    typescript: "4.9.3",
     "tsc-alias": "^1.7.1",
 };
 
