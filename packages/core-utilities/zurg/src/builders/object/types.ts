@@ -4,20 +4,26 @@ import { ObjectLikeUtils } from "../object-like";
 import { SchemaUtils } from "../schema-utils";
 import { Property } from "./property";
 
-export type ObjectSchema<Raw, Parsed> = BaseObjectSchema<Raw, Parsed> &
-    ObjectLikeUtils<Raw, Parsed> &
-    ObjectUtils<Raw, Parsed> &
-    SchemaUtils<Raw, Parsed>;
+export type ObjectSchema<ParsedKeys extends string, T extends PropertySchemas<ParsedKeys>> = BaseObjectSchema<
+    ParsedKeys,
+    T
+> &
+    ObjectLikeUtils<inferRawObjectFromPropertySchemas<T>, inferParsedObjectFromPropertySchemas<T>> &
+    ObjectUtils<inferRawObjectFromPropertySchemas<T>, inferParsedObjectFromPropertySchemas<T>> &
+    SchemaUtils<inferRawObjectFromPropertySchemas<T>, inferParsedObjectFromPropertySchemas<T>>;
 
-export interface BaseObjectSchema<Raw, Parsed> extends BaseSchema<Raw, Parsed> {
-    _getRawProperties: () => Promise<(keyof Raw)[]>;
-    _getParsedProperties: () => Promise<(keyof Parsed)[]>;
+export interface BaseObjectSchema<ParsedKeys extends string, T extends PropertySchemas<ParsedKeys>>
+    extends BaseSchema<inferRawObjectFromPropertySchemas<T>, inferParsedObjectFromPropertySchemas<T>> {
+    _getRawProperties: () => Promise<(keyof inferRawObjectFromPropertySchemas<T>)[]>;
+    _getParsedProperties: () => Promise<(keyof inferParsedObjectFromPropertySchemas<T>)[]>;
+    _getPropertySchemas: () => Promise<T>;
 }
 
 export interface ObjectUtils<Raw, Parsed> {
     extend: <RawExtension, ParsedExtension>(
         schemas: ObjectSchema<RawExtension, ParsedExtension>
     ) => ObjectSchema<Raw & RawExtension, Parsed & ParsedExtension>;
+    partial: () => ObjectSchema<Partial<Raw>, Partial<Parsed>>;
 }
 
 export type inferRawObject<O extends ObjectSchema<any, any>> = O extends ObjectSchema<infer Raw, any> ? Raw : never;

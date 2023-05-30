@@ -1,4 +1,4 @@
-import { MaybeValid, Schema, SchemaType, ValidationError } from "../../Schema";
+import { MaybeValid, Schema, SchemaOptions, SchemaType, ValidationError } from "../../Schema";
 import { entries } from "../../utils/entries";
 import { filterObject } from "../../utils/filterObject";
 import { getErrorMessageForIncorrectType } from "../../utils/getErrorMessageForIncorrectType";
@@ -41,107 +41,8 @@ export function object<ParsedKeys extends string, T extends PropertySchemas<Pars
             ),
         _getParsedProperties: () =>
             Promise.resolve(keys(schemas) as unknown as (keyof inferParsedObjectFromPropertySchemas<T>)[]),
-
-        parse: async (raw, opts) => {
-            const rawKeyToProperty: Record<string, ObjectPropertyWithRawKey> = {};
-            const requiredKeys: string[] = [];
-
-            for (const [parsedKey, schemaOrObjectProperty] of entries(schemas)) {
-                const rawKey = isProperty(schemaOrObjectProperty) ? schemaOrObjectProperty.rawKey : parsedKey;
-                const valueSchema: Schema<any, any> = isProperty(schemaOrObjectProperty)
-                    ? schemaOrObjectProperty.valueSchema
-                    : schemaOrObjectProperty;
-
-                const property: ObjectPropertyWithRawKey = {
-                    rawKey,
-                    parsedKey: parsedKey as string,
-                    valueSchema,
-                };
-
-                rawKeyToProperty[rawKey] = property;
-
-                if (await isSchemaRequired(valueSchema)) {
-                    requiredKeys.push(rawKey);
-                }
-            }
-
-            return validateAndTransformObject({
-                value: raw,
-                requiredKeys,
-                getProperty: (rawKey) => {
-                    const property = rawKeyToProperty[rawKey];
-                    if (property == null) {
-                        return undefined;
-                    }
-                    return {
-                        transformedKey: property.parsedKey,
-                        transform: (propertyValue) =>
-                            property.valueSchema.parse(propertyValue, {
-                                ...opts,
-                                breadcrumbsPrefix: [...(opts?.breadcrumbsPrefix ?? []), rawKey],
-                            }),
-                    };
-                },
-                unrecognizedObjectKeys: opts?.unrecognizedObjectKeys,
-                skipValidation: opts?.skipValidation,
-                breadcrumbsPrefix: opts?.breadcrumbsPrefix,
-            });
-        },
-
-        json: async (parsed, opts) => {
-            const requiredKeys: string[] = [];
-
-            for (const [parsedKey, schemaOrObjectProperty] of entries(schemas)) {
-                const valueSchema: Schema<any, any> = isProperty(schemaOrObjectProperty)
-                    ? schemaOrObjectProperty.valueSchema
-                    : schemaOrObjectProperty;
-
-                if (await isSchemaRequired(valueSchema)) {
-                    requiredKeys.push(parsedKey as string);
-                }
-            }
-
-            return validateAndTransformObject({
-                value: parsed,
-                requiredKeys,
-                getProperty: (
-                    parsedKey
-                ):
-                    | { transformedKey: string; transform: (propertyValue: unknown) => MaybePromise<MaybeValid<any>> }
-                    | undefined => {
-                    const property = schemas[parsedKey as keyof T];
-
-                    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-                    if (property == null) {
-                        return undefined;
-                    }
-
-                    if (isProperty(property)) {
-                        return {
-                            transformedKey: property.rawKey,
-                            transform: (propertyValue) =>
-                                property.valueSchema.json(propertyValue, {
-                                    ...opts,
-                                    breadcrumbsPrefix: [...(opts?.breadcrumbsPrefix ?? []), parsedKey],
-                                }),
-                        };
-                    } else {
-                        return {
-                            transformedKey: parsedKey,
-                            transform: (propertyValue) =>
-                                property.json(propertyValue, {
-                                    ...opts,
-                                    breadcrumbsPrefix: [...(opts?.breadcrumbsPrefix ?? []), parsedKey],
-                                }),
-                        };
-                    }
-                },
-                unrecognizedObjectKeys: opts?.unrecognizedObjectKeys,
-                skipValidation: opts?.skipValidation,
-                breadcrumbsPrefix: opts?.breadcrumbsPrefix,
-            });
-        },
-
+        parse: generateObjectParse(schemas),
+        json: generateObjectJson(schemas),
         getType: () => SchemaType.OBJECT,
     };
 
@@ -150,6 +51,114 @@ export function object<ParsedKeys extends string, T extends PropertySchemas<Pars
         ...getSchemaUtils(baseSchema),
         ...getObjectLikeUtils(baseSchema),
         ...getObjectUtils(baseSchema),
+    };
+}
+
+function generateObjectParse<ParsedKeys extends string, T extends PropertySchemas<ParsedKeys>>(
+    schemas: T
+): (raw: unknown, opts?: SchemaOptions) => Promise<MaybeValid<inferParsedObjectFromPropertySchemas<T>>> {
+    return async (raw, opts) => {
+        const rawKeyToProperty: Record<string, ObjectPropertyWithRawKey> = {};
+        const requiredKeys: string[] = [];
+
+        for (const [parsedKey, schemaOrObjectProperty] of entries(schemas)) {
+            const rawKey = isProperty(schemaOrObjectProperty) ? schemaOrObjectProperty.rawKey : parsedKey;
+            const valueSchema: Schema<any, any> = isProperty(schemaOrObjectProperty)
+                ? schemaOrObjectProperty.valueSchema
+                : schemaOrObjectProperty;
+
+            const property: ObjectPropertyWithRawKey = {
+                rawKey,
+                parsedKey: parsedKey as string,
+                valueSchema,
+            };
+
+            rawKeyToProperty[rawKey] = property;
+
+            if (await isSchemaRequired(valueSchema)) {
+                requiredKeys.push(rawKey);
+            }
+        }
+
+        return validateAndTransformObject({
+            value: raw,
+            requiredKeys,
+            getProperty: (rawKey) => {
+                const property = rawKeyToProperty[rawKey];
+                if (property == null) {
+                    return undefined;
+                }
+                return {
+                    transformedKey: property.parsedKey,
+                    transform: (propertyValue) =>
+                        property.valueSchema.parse(propertyValue, {
+                            ...opts,
+                            breadcrumbsPrefix: [...(opts?.breadcrumbsPrefix ?? []), rawKey],
+                        }),
+                };
+            },
+            unrecognizedObjectKeys: opts?.unrecognizedObjectKeys,
+            skipValidation: opts?.skipValidation,
+            breadcrumbsPrefix: opts?.breadcrumbsPrefix,
+        });
+    };
+}
+
+function generateObjectJson<ParsedKeys extends string, T extends PropertySchemas<ParsedKeys>>(
+    schemas: T
+): (parsed: unknown, opts?: SchemaOptions) => Promise<MaybeValid<inferRawObjectFromPropertySchemas<T>>> {
+    return async (parsed, opts) => {
+        const requiredKeys: string[] = [];
+
+        for (const [parsedKey, schemaOrObjectProperty] of entries(schemas)) {
+            const valueSchema: Schema<any, any> = isProperty(schemaOrObjectProperty)
+                ? schemaOrObjectProperty.valueSchema
+                : schemaOrObjectProperty;
+
+            if (await isSchemaRequired(valueSchema)) {
+                requiredKeys.push(parsedKey as string);
+            }
+        }
+
+        return validateAndTransformObject({
+            value: parsed,
+            requiredKeys,
+            getProperty: (
+                parsedKey
+            ):
+                | { transformedKey: string; transform: (propertyValue: unknown) => MaybePromise<MaybeValid<any>> }
+                | undefined => {
+                const property = schemas[parsedKey as keyof T];
+
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+                if (property == null) {
+                    return undefined;
+                }
+
+                if (isProperty(property)) {
+                    return {
+                        transformedKey: property.rawKey,
+                        transform: (propertyValue) =>
+                            property.valueSchema.json(propertyValue, {
+                                ...opts,
+                                breadcrumbsPrefix: [...(opts?.breadcrumbsPrefix ?? []), parsedKey],
+                            }),
+                    };
+                } else {
+                    return {
+                        transformedKey: parsedKey,
+                        transform: (propertyValue) =>
+                            property.json(propertyValue, {
+                                ...opts,
+                                breadcrumbsPrefix: [...(opts?.breadcrumbsPrefix ?? []), parsedKey],
+                            }),
+                    };
+                }
+            },
+            unrecognizedObjectKeys: opts?.unrecognizedObjectKeys,
+            skipValidation: opts?.skipValidation,
+            breadcrumbsPrefix: opts?.breadcrumbsPrefix,
+        });
     };
 }
 
@@ -265,6 +274,27 @@ export function getObjectUtils<Raw, Parsed>(schema: BaseObjectSchema<Raw, Parsed
                         transformBase: (parsedBase) => schema.json(parsedBase, opts),
                         transformExtension: (parsedExtension) => extension.json(parsedExtension, opts),
                     });
+                },
+                getType: () => SchemaType.OBJECT,
+            };
+
+            return {
+                ...baseSchema,
+                ...getSchemaUtils(baseSchema),
+                ...getObjectLikeUtils(baseSchema),
+                ...getObjectUtils(baseSchema),
+            };
+        },
+
+        partial: () => {
+            const baseSchema: BaseObjectSchema<Partial<Raw>, Partial<Parsed>> = {
+                _getParsedProperties: schema._getParsedProperties,
+                _getRawProperties: schema._getRawProperties,
+                parse: async (raw, opts) => {
+                    // TODO reuse object code but pass in partial=true
+                },
+                json: async (parsed, opts) => {
+                    // TODO reuse object code but pass in partial=true
                 },
                 getType: () => SchemaType.OBJECT,
             };
