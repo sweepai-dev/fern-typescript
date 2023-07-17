@@ -6,7 +6,7 @@
   
   <br/>
 
-# TypeScript Compiler
+# TypeScript Generator
 
 [![Contributors](https://img.shields.io/github/contributors/fern-api/fern-typescript.svg)](https://GitHub.com/dotnet/docs/graphs/contributors/)
 [![Pulls-opened](https://img.shields.io/github/issues-pr/fern-api/fern-typescript.svg)](https://GitHub.com/dotnet/docs/pulls?q=is%3Aissue+is%3Aopened)
@@ -16,7 +16,7 @@
 
 </div>
 
-This repository contains the source for the various compilers that produce TypeScript artifacts for [Fern](https://github.com/fern-api/fern):
+This repository contains the source for the various generators that produce TypeScript artifacts for [Fern](https://github.com/fern-api/fern):
 
 - `fernapi/fern-typescript-node-sdk`
 - `fernapi/fern-typescript-browser-sdk`
@@ -24,9 +24,9 @@ This repository contains the source for the various compilers that produce TypeS
 
 Every generator is written in the same programming language as the artifacts it produces. We strongly emphasize idiomatic code generation, ensuring all generated SDKs and server-side code feels hand-written and is easy to understand.
 
-The compilers in this repository handle the generation of code based on a definition of an API in Fern _intermediate representation_, or IR for short. This is a normalized, Fern specific definition of an API containing all details such as its endpoints, models, etc.
+The generators in this repository handle the generation of code based on a definition of an API in Fern _intermediate representation_, or IR for short. This is a normalized, Fern specific definition of an API containing all details such as its endpoints, models, etc.
 
-Fern itself handles the transformation from either a Fern or OpenAPI definition into IR, after which a language-specific compiler - such as this one - takes over, and turns the IR into production-ready code.
+Fern itself handles the transformation from either a Fern or OpenAPI definition into IR, after which a language-specific generator - such as this one - takes over, and turns the IR into production-ready code.
 
 ## What is Fern?
 
@@ -36,7 +36,7 @@ Head over to the [official Fern website](https://buildwithfern.com) for more inf
 
 ## Generating TypeScript
 
-This compiler is used via the [Fern CLI](https://github.com/fern-api/fern), by defining one of the aforementioned TypeScript artifacts as a generator:
+This generator is used via the [Fern CLI](https://github.com/fern-api/fern), by defining one of the aforementioned TypeScript artifacts as a generator:
 
 ```yml
 - name: fernapi/fern-typescript-node-sdk
@@ -47,11 +47,11 @@ This compiler is used via the [Fern CLI](https://github.com/fern-api/fern), by d
     package-name: "@my-org/petstore"
 ```
 
-It is also possible to run the compiler locally, using the `--local` flag for `fern generate`. This will run the compiler locally in a Docker container, allowing you to inspect its logs and output.
+It is also possible to run the generator locally, using the `--local` flag for `fern generate`. This will run the generator locally in a Docker container, allowing you to inspect its logs and output.
 
 ## Contributing
 
-We greatly value community contributions. All the work on Fern compilers happens right here on GitHub, both Fern developers and community contributors work together through submitting code via Pull Requests. See the contribution guidelines in [CONTRIBUTING](./CONTRIBUTING.md) on how you can contribute to Fern!
+We greatly value community contributions. All the work on Fern generators happens right here on GitHub, both Fern developers and community contributors work together through submitting code via Pull Requests. See the contribution guidelines in [CONTRIBUTING](./CONTRIBUTING.md) on how you can contribute to Fern!
 
 <a href="https://github.com/fern-api/fern-typescript/graphs/contributors">
   <img src="https://contrib.rocks/image?repo=fern-api/fern-typescript" />
