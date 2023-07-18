@@ -70,40 +70,40 @@ groups:
 
 The browser and Node SDK generators support the following options:
 
-```
-useBrandedStringAliases                     bool
-private                                     bool
-neverThrowErrors                            bool
-namespaceExport                             string
-outputEsm                                   bool
-outputSourceFiles                           bool
-includeCredentialsOnCrossOriginRequests     bool
-bundle                                      bool
-allowCustomFetcher                          bool
-includeUtilsOnUnionMembers                  bool
-includeOtherInUnionTypes                    bool
-requireDefaultEnvironment                   bool
-timeoutInSeconds                            "infinity" | int
-skipResponseValidation                      bool
-extraDependencies                           string
-treatUnknownAsAny                           bool
-includeContentHeadersOnFileDownloadResponse bool
-noSerdeLayer                                bool
-```
+| Option                                      | Type                | Description                                                                                                                                 |
+|---------------------------------------------|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
+| useBrandedStringAliases                     | `bool`              |                                                                                                                                             |
+| private                                     | `bool`              | If specified, generates all code as private members.                                                                                        |
+| neverThrowErrors                            | `bool`              | If specified, the generated code will not throw errors.                                                                                     |
+| namespaceExport                             | `string`            | If specified, generates all code as part of the specified namespace.                                                                        |
+| outputEsm                                   | `bool`              |                                                                                                                                             |
+| outputSourceFiles                           | `bool`              | If specified, outputs the source files rather than the TypeScript compiler's output.                                                        |
+| includeCredentialsOnCrossOriginRequests     | `bool`              |                                                                                                                                             |
+| bundle                                      | `bool`              | If specified, generates a bundle rather than individual source files.                                                                       |
+| allowCustomFetcher                          | `bool`              |                                                                                                                                             |
+| includeUtilsOnUnionMembers                  | `bool`              |                                                                                                                                             |
+| includeOtherInUnionTypes                    | `bool`              |                                                                                                                                             |
+| requireDefaultEnvironment                   | `bool`              |                                                                                                                                             |
+| timeoutInSeconds                            | `"infinity" \| int` | If specified, sets the request timeout to the specified value. This value must either be the string literal "infinity", or a numeric value. |
+| skipResponseValidation                      | `bool`              |                                                                                                                                             |
+| extraDependencies                           | `bool`              |                                                                                                                                             |
+| treatUnknownAsAny                           | `bool`              | If specified, unknown types are generated as `any`.                                                                                         |
+| includeContentHeadersOnFileDownloadResponse | `bool`              |                                                                                                                                             |
+| noSerdeLayer                                | `bool`              |                                                                                                                                             |
 
 ### Express Configuration
 
 The following options are supported when generating an Express backend:
 
-```
-useBrandedStringAliases       bool
-areImplementationsOptional    bool
-doNotHandleUnrecognizedErrors bool
-includeUtilsOnUnionMembers    bool
-includeOtherInUnionTypes      bool
-treatUnknownAsAny             bool
-noSerdeLayer                  bool
-```
+| Option                          | Type   | Description                                                    |
+|---------------------------------|--------|----------------------------------------------------------------|
+|  useBrandedStringAliases        | `bool` |                                                                |
+|  areImplementationsOptional     | `bool` | If specified, all implementations are generated as `optional`. |
+|  doNotHandleUnrecognizedErrors  | `bool` |                                                                |
+|  includeUtilsOnUnionMembers     | `bool` |                                                                |
+|  includeOtherInUnionTypes       | `bool` |                                                                |
+|  treatUnknownAsAny              | `bool` | If specified, all unknown types are generated as `any`.        |
+|  noSerdeLayer                   | `bool` |                                                                |
 
 ## Dependencies
 
