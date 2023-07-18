@@ -53,7 +53,7 @@ It is also possible to run the generator locally, using the `--local` flag for `
 
 You can customize the behavior of generators through the `generators.yml` file. The Express and SDK generators support their own set of options, for example to specify the request timeout duration.
 
-You can specify these options directly when you configure your generators. For example, to instruct the TypeScript Node SDK generator to output a bundle:
+You can specify these options directly when you configure your generators via the `config` object. For example, to instruct the TypeScript Node SDK generator to output a bundle:
 
 ```yml
 default-group: local
@@ -62,10 +62,11 @@ groups:
     generators:
       - name: fernapi/fern-typescript-node-sdk
         version: 0.7.1
-        bundle: true
+        config:
+          bundle: true
 ```
 
-### SDK Options
+### SDK Configuration
 
 The browser and Node SDK generators support the following options:
 
@@ -90,7 +91,7 @@ includeContentHeadersOnFileDownloadResponse bool
 noSerdeLayer                                bool
 ```
 
-### Express Options
+### Express Configuration
 
 The following options are supported when generating an Express backend:
 
