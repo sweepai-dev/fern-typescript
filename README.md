@@ -1,6 +1,6 @@
 <br/>
 <div align="center">
-  <a href="https://www.buildwithfern.com/">
+  <a href="https://www.buildwithfern.com/?utm_source=github&utm_medium=readme&utm_campaign=fern-typescript&utm_content=logo">
     <img src="fern.png" height="120" align="center" alt="header" />
   </a>
   
@@ -22,17 +22,15 @@ This repository contains the source for the various generators that produce Type
 - `fernapi/fern-typescript-browser-sdk`
 - `fernapi/fern-typescript-express`
 
-Every generator is written in the same programming language as the artifacts it produces. We strongly emphasize idiomatic code generation, ensuring all generated SDKs and server-side code feels hand-written and is easy to understand.
+The TypeScript generators are written in TypeScript. We strongly emphasize idiomatic code generation that feels hand-written and is friendly to read.
 
-The generators in this repository handle the generation of code based on a definition of an API in Fern _intermediate representation_, or IR for short. This is a normalized, Fern specific definition of an API containing all details such as its endpoints, models, etc.
-
-Fern itself handles the transformation from either a Fern or OpenAPI definition into IR, after which a language-specific generator - such as this one - takes over, and turns the IR into production-ready code.
+Fern handles transforming an API definition -- either an OpenAPI or Fern specification -- into Fern _intermediate representation_. IR is a normalized, Fern-specific definition of an API containing its endpoints, models, errors, authentication scheme, version, and more. Then the TypeScript generator takes over and turns the IR into production-ready code.
 
 ## What is Fern?
 
 Fern is an open source toolkit for designing, building, and consuming REST APIs. With Fern, you can generate client libraries, API documentation and boilerplate for your backend server.
 
-Head over to the [official Fern website](https://buildwithfern.com) for more information, or head over to our [Documentation](https://buildwithfern.com/docs/intro) to dive straight in, and find out what Fern can do for you!
+Head over to the [official Fern website](https://www.buildwithfern.com/?utm_source=github&utm_medium=readme&utm_campaign=fern-typescript&utm_content=homepage) for more information, or head over to our [Documentation](https://www.buildwithfern.com/docs/intro?utm_source=github&utm_medium=readme&utm_campaign=fern-typescript&utm_content=documentation) to dive straight in and find out what Fern can do for you!
 
 ## Generating TypeScript
 
@@ -47,11 +45,11 @@ This generator is used via the [Fern CLI](https://github.com/fern-api/fern), by 
     package-name: "@my-org/petstore"
 ```
 
-It is also possible to run the generator locally, using the `--local` flag for `fern generate`. This will run the generator locally in a Docker container, allowing you to inspect its logs and output.
+By default, Fern runs the generators in the cloud. To run a generator on your local machine, using the `--local` flag for `fern generate`. This will run the generator locally in a Docker container, allowing you to inspect its logs and output. [Read more.](https://buildwithfern.com/docs/compiler/cli-reference#running-locally)
 
 ## Configuration
 
-You can customize the behavior of generators through the `generators.yml` file. The Express and SDK generators support their own set of options, for example to specify the request timeout duration.
+You can customize the behavior of generators through the `generators.yml` file. The Node SDK, Browser SDK, and Express generators support their own set of options, for example, to specify the request timeout duration.
 
 You can specify these options directly when you configure your generators via the `config` object. For example, to instruct the TypeScript Node SDK generator to output a bundle:
 
@@ -68,7 +66,7 @@ groups:
 
 ### SDK Configuration
 
-The browser and Node SDK generators support the following options:
+The Node SDK and Browser SDK generators support the following options:
 
 | Option                                      | Type                | Description                                                                                                                                 |
 |---------------------------------------------|---------------------|---------------------------------------------------------------------------------------------------------------------------------------------|
