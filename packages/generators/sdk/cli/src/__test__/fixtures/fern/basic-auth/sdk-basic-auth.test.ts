@@ -1,4 +1,4 @@
-import { BasicAuth } from '../src';
+import { BasicAuth } from '../../src';
 
 describe('BasicAuth SDK', () => {
   it('should have defined exports', () => {
