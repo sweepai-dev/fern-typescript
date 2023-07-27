@@ -320,6 +320,14 @@ describe("runGenerator", () => {
 
                 await fixture.additionalAssertions?.(unzippedDirectory);
 
+                // Check that a test file exists for each module
+                for (const item of directoryContents) {
+                    if (item.isDirectory) {
+                        // eslint-disable-next-line jest/no-standalone-expect
+                        expect(await doesTestFileExist(unzippedDirectory, item.name)).toBe(true);
+                    }
+                }
+
                 // eslint-disable-next-line jest/no-standalone-expect
                 expect(directoryContents).toMatchSpecificSnapshot(path.join(fixturePath, `sdk-${fixture.path}.shot`));
             },
@@ -398,4 +406,9 @@ async function getDirectoryForSnapshot(outputPath: AbsoluteFilePath): Promise<Ab
     const unzippedPackage = (await tmp.dir()).path;
     await decompress(path.join(outputPath, "output.zip"), unzippedPackage);
     return AbsoluteFilePath.of(unzippedPackage);
+}
+
+async function doesTestFileExist(outputPath: string, moduleName: string): Promise<boolean> {
+    const testFilePath = path.join(outputPath, moduleName, "__tests__", `${moduleName}.test.ts`);
+    return await doesPathExist(testFilePath);
 }
