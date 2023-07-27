@@ -96,6 +96,8 @@ export class SdkGeneratorCli extends AbstractGeneratorCli<SdkCustomConfig> {
             pathToSrc: persistedTypescriptProject.getSrcDirectory(),
         });
 
+        await this.generateTestFiles(persistedTypescriptProject);
+
         return persistedTypescriptProject;
     }
 
@@ -105,5 +107,9 @@ export class SdkGeneratorCli extends AbstractGeneratorCli<SdkCustomConfig> {
 
     protected outputSourceFiles(customConfig: SdkCustomConfig): boolean {
         return customConfig.outputSourceFiles;
+    }
+
+    private async generateTestFiles(persistedTypescriptProject: PersistedTypescriptProject): Promise<void> {
+        // TODO: Implement test file generation logic
     }
 }
