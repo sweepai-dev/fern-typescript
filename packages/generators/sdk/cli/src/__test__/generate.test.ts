@@ -322,6 +322,7 @@ describe("runGenerator", () => {
 
                 // Check that a test file exists for each module
                 for (const item of directoryContents) {
+                    // Check the `FileOrDirectory` type definition and add the `isDirectory` property if it's not there.
                     if (item.isDirectory) {
                         // eslint-disable-next-line jest/no-standalone-expect
                         expect(await doesTestFileExist(unzippedDirectory, item.name)).toBe(true);
