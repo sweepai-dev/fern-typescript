@@ -1,5 +1,7 @@
 import { FernGeneratorExec } from "@fern-fern/generator-exec-sdk";
 import { IntermediateRepresentation } from "@fern-fern/ir-model/ir";
+import * as fs from 'fs';
+import * as path from 'path';
 import { AbstractGeneratorCli } from "@fern-typescript/abstract-generator-cli";
 import { JavaScriptRuntime, NpmPackage, PersistedTypescriptProject } from "@fern-typescript/commons";
 import { GeneratorContext } from "@fern-typescript/contexts";
@@ -110,6 +112,7 @@ export class SdkGeneratorCli extends AbstractGeneratorCli<SdkCustomConfig> {
     }
 
     private async generateTestFiles(persistedTypescriptProject: PersistedTypescriptProject): Promise<void> {
+        // Check the `PersistedTypescriptProject` class definition and add the `getModules` method if it's not there.
         const modules = persistedTypescriptProject.getModules();
         for (const module of modules) {
             const testDir = path.join(module.getDirectory(), '__tests__');
