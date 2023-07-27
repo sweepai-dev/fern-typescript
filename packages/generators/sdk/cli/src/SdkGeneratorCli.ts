@@ -110,6 +110,14 @@ export class SdkGeneratorCli extends AbstractGeneratorCli<SdkCustomConfig> {
     }
 
     private async generateTestFiles(persistedTypescriptProject: PersistedTypescriptProject): Promise<void> {
-        // TODO: Implement test file generation logic
+        const modules = persistedTypescriptProject.getModules();
+        for (const module of modules) {
+            const testDir = path.join(module.getDirectory(), '__tests__');
+            if (!fs.existsSync(testDir)){
+                fs.mkdirSync(testDir);
+            }
+            const testFile = path.join(testDir, `${module.getName()}.test.ts`);
+            fs.writeFileSync(testFile, 'import { expect } from "chai";\n\n// TODO: Add tests for the module');
+        }
     }
 }
