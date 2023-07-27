@@ -410,5 +410,10 @@ async function getDirectoryForSnapshot(outputPath: AbsoluteFilePath): Promise<Ab
 
 async function doesTestFileExist(outputPath: string, moduleName: string): Promise<boolean> {
     const testFilePath = path.join(outputPath, moduleName, "__tests__", `${moduleName}.test.ts`);
-    return await doesPathExist(testFilePath);
+    try {
+        return await doesPathExist(testFilePath);
+    } catch (error) {
+        console.error(`Error while checking if test file exists for module ${moduleName}:`, error);
+        return false;
+    }
 }
