@@ -103,14 +103,6 @@ export class SdkGeneratorCli extends AbstractGeneratorCli<SdkCustomConfig> {
         return persistedTypescriptProject;
     }
 
-    protected isPackagePrivate(customConfig: SdkCustomConfig): boolean {
-        return customConfig.isPackagePrivate;
-    }
-
-    protected outputSourceFiles(customConfig: SdkCustomConfig): boolean {
-        return customConfig.outputSourceFiles;
-    }
-
     private async generateTestFiles(persistedTypescriptProject: PersistedTypescriptProject): Promise<void> {
         // Check the `PersistedTypescriptProject` class definition and add the `getModules` method if it's not there.
         const modules = persistedTypescriptProject.getModules();
@@ -122,5 +114,18 @@ export class SdkGeneratorCli extends AbstractGeneratorCli<SdkCustomConfig> {
             const testFile = path.join(testDir, `${module.getName()}.test.ts`);
             fs.writeFileSync(testFile, 'import { expect } from "chai";\n\n// TODO: Add tests for the module');
         }
+    }
+
+    protected isPackagePrivate(customConfig: SdkCustomConfig): boolean {
+        return customConfig.isPackagePrivate;
+    }
+
+    protected outputSourceFiles(customConfig: SdkCustomConfig): boolean {
+        return customConfig.outputSourceFiles;
+    }
+
+    // Add the 'getModules' method to the 'PersistedTypescriptProject' class. This method should return an array of all the modules in the project.
+    private getModules(): Module[] {
+        return this.modules;
     }
 }
