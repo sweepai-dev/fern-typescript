@@ -106,4 +106,24 @@ export class SdkGeneratorCli extends AbstractGeneratorCli<SdkCustomConfig> {
     protected outputSourceFiles(customConfig: SdkCustomConfig): boolean {
         return customConfig.outputSourceFiles;
     }
+
+    protected generateNoopTest(): void {
+        const fs = require('fs');
+        const path = require('path');
+        const testDir = path.join(__dirname, 'tests');
+        const testFile = path.join(testDir, 'noop.test.ts');
+        const testCode = `
+            /**
+             * This is a simple no-op test that is skipped by default.
+             * For more information on writing tests with Jest, visit https://jestjs.io/docs/getting-started
+             */
+            test.skip('no-op', () => {});
+        `;
+
+        if (!fs.existsSync(testDir)) {
+            fs.mkdirSync(testDir);
+        }
+
+        fs.writeFileSync(testFile, testCode);
+    }
 }
