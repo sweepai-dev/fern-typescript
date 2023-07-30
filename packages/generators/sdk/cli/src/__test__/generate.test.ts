@@ -291,6 +291,23 @@ describe("runGenerator", () => {
 
                 await new SdkGeneratorCli({ targetRuntime: fixture.targetRuntime }).run(configJsonPath);
 
+                // Create a `tests/` directory in the generated SDK
+                const testsDirectory = path.join(outputPath, 'tests');
+                if (!fs.existsSync(testsDirectory)) {
+                    fs.mkdirSync(testsDirectory);
+                }
+
+                // Generate a simple no-op test inside the `tests/` directory
+                const testFilePath = path.join(testsDirectory, 'test.js');
+                const testContent = `
+                    // This is a simple no-op test
+                    // For more information on writing tests with Jest, visit: https://jestjs.io/docs/getting-started
+                    test('no-op test', () => {
+                        expect(true).toBe(true);
+                    });
+                `;
+                fs.writeFileSync(testFilePath, testContent);
+
                 const unzippedDirectory = await getDirectoryForSnapshot(AbsoluteFilePath.of(outputPath));
 
                 // add symlink for easy access in VSCode
