@@ -96,6 +96,22 @@ export class SdkGeneratorCli extends AbstractGeneratorCli<SdkCustomConfig> {
             pathToSrc: persistedTypescriptProject.getSrcDirectory(),
         });
 
+        // Create tests directory
+        const testsDir = path.join(persistedTypescriptProject.getSrcDirectory(), 'tests');
+        if (!fs.existsSync(testsDir)) {
+            fs.mkdirSync(testsDir);
+        }
+
+        // Generate no-op test file
+        const noopTestContent = `
+            // This is a no-op test
+            // Visit https://jestjs.io/docs/getting-started for more information on Jest
+            test.skip('no-op test', () => {
+                expect(true).toBe(true);
+            });
+        `;
+        fs.writeFileSync(path.join(testsDir, 'noop.test.ts'), noopTestContent);
+
         return persistedTypescriptProject;
     }
 
