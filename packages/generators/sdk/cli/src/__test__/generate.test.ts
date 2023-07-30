@@ -249,6 +249,13 @@ const FIXTURES: FixtureInfo[] = [
             expect(await doesPathExist(path.join(outputPath, "src", "core", "schemas"))).toBe(false);
         },
     },
+    {
+        path: "tests/noop.test.ts",
+        orgName: "fern",
+        outputMode: "github",
+        apiName: "api",
+        targetRuntime: JavaScriptRuntime.NODE,
+    },
 ];
 const FIXTURES_PATH = path.join(__dirname, "fixtures");
 
