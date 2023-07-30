@@ -318,6 +318,14 @@ describe("runGenerator", () => {
                     (item) => !FILENAMES_TO_IGNORE_FOR_SNAPSHOT.has(item.name)
                 );
 
+                // Verify that the tests directory and no-op test file are correctly generated
+                const testsDir = path.join(unzippedDirectory, 'tests');
+                const noopTestFile = path.join(testsDir, 'noop.test.ts');
+                // eslint-disable-next-line jest/no-standalone-expect
+                expect(await doesPathExist(testsDir)).toBe(true);
+                // eslint-disable-next-line jest/no-standalone-expect
+                expect(await doesPathExist(noopTestFile)).toBe(true);
+
                 await fixture.additionalAssertions?.(unzippedDirectory);
 
                 // eslint-disable-next-line jest/no-standalone-expect
